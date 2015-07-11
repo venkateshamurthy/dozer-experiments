@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  http://dozer.sourceforge.net/schema/beanmapping.xsd">
+	
+	<mapping map-id="source-to-substitute-target">
+		<class-a>com.github.venkateshamurthy.dozer.converters.examples.SourceHolder</class-a>
+		<class-b>com.github.venkateshamurthy.dozer.converters.examples.TargetHolder</class-b>
+		<field  custom-converter-id="source-to-target-pre-defined"	custom-converter-param="bean:pre-defined-target">
+			<a>source</a>	<b>target</b>
+		</field>
+	</mapping>
+	<mapping map-id="source-to-target-list" >		
+		<class-a>com.github.venkateshamurthy.dozer.converters.examples.SourceHolder</class-a>
+		<class-b>com.github.venkateshamurthy.dozer.converters.examples.TargetListHolder</class-b>
+		<field  custom-converter-param="map-id:source-to-target" custom-converter-id="source-to-target-list">
+				<a>source</a>	<b>targets</b>
+		</field>
+	</mapping>
+	<mapping map-id="source-to-target">
+		<class-a>com.github.venkateshamurthy.dozer.converters.examples.Source</class-a>
+		<class-b>com.github.venkateshamurthy.dozer.converters.examples.Target</class-b>
+		<field>	<a>address1</a>	<b>street1</b>	</field>
+		<field>	<a>address2</a>	<b>street2</b>	</field>
+		<field>	<a>zip</a>		<b>pin</b>		</field>
+		<field>	<a>state</a>	<b>province</b>	</field>
+	</mapping>
+	<mapping map-id="source-to-target-with-few-constants">
+		<class-a>com.github.venkateshamurthy.dozer.converters.examples.SourceHolder</class-a>
+		<class-b>com.github.venkateshamurthy.dozer.converters.examples.TargetHolder</class-b>
+		<field map-id="source-to-target"><a>source</a><b>target</b></field>
+		<field custom-converter-id="to-date" custom-converter-param="1947-08-15"><a>dob</a><b>dob</b></field>
+		<field custom-converter-id="to-int" custom-converter-param="24"><a>age</a><b>age</b></field>
+		<field custom-converter-id="to-double" custom-converter-param="500000.0"><a>salary</a><b>salary</b></field>
+		<field custom-converter-id="to-long" custom-converter-param="100300500700"><a>uan</a><b>uan</b></field>
+	</mapping>
+</mappings>

@@ -1,0 +1,122 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<description>
+		Note about converters:
+		The below converters specialize in assigning a	constant or	constant/pre-defined bean to the target.
+		In	addition to map	a source to a collection container
+		1) Set of constant	converters for	different Java primitive types
+		2) Convert an element of prototypeS to	List&lt;prototypeT&gt;
+		3) Convert a specific value based	on a predefined	properties or map
+		4) Convert a bean of one type to an	another	pre-defined defaults.
+		This would require the specific	pre-populated bean id to be declared in
+		custom-converter-param of dozer	mapping file in the form bean:bean-name.
+	</description>
+	
+	<!-- java.util.Logger being set with a format into system properties. otherwise without this the log lines are printed into 2 lines which is ugly-->
+	<bean id="java-util-logger-setup" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" 
+        p:targetObject="#{@systemProperties}" p:targetMethod="setProperty"
+        p:arguments="#{{'java.util.logging.SimpleFormatter.format','%1$tF %1$tT [%4$s]: %5$s %n'}}"/>
+        
+	<bean id="home-phone" class="${examples.package}.Phone" p:std="000"
+		p:phoneNumber="99999999" />
+
+	<bean id="source" class="${examples.package}.Source" p:name="vemurthy"
+		p:address1="000 Ist main, Ist cross" p:address2="chintamani ganesh"
+		p:city="dharanagari" p:state="ujjaina prantha" p:zip="555555"
+		p:phone-ref="home-phone" />
+
+	<bean id="source-holder" class="${examples.package}.SourceHolder"
+		p:source-ref="source" />
+
+	<bean id="pre-defined-target" class="${examples.package}.Target"
+		p:name="vemurthy" p:firstName="venkat" p:lastName="murthy"
+		p:street1="000 first main, first cross" p:street2="mahalakshmi"
+		p:city="dhenupuri" p:province="dakshina prantha" p:pin="999999"
+		p:phone-ref="home-phone" />
+
+	<bean id="to-date" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.util.Date" />
+	<bean id="to-big-int" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.math.BigInteger" />
+	<bean id="to-big-decimal" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.math.BigDecimal" />
+	<bean id="to-long" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Long" />
+	<bean id="to-boolean" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Boolean" />
+	<bean id="to-int" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Integer" />
+	<bean id="to-short" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Short" />
+	<bean id="to-double" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Double" />
+	<bean id="to-byte" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.Byte" />
+	<bean id="to-string" class="${main.package}.ConstantsTypedConverter"
+		c:prototypeT="java.lang.String" />
+
+	<bean id="source-to-target-pre-defined" class="${main.package}.PreDefinedBeanConverter"
+		c:clazzS="${examples.package}.Source" c:clazzT="${examples.package}.Target" />
+		
+	<bean id="source-to-target-list" class="${main.package}.SToTListConverter"
+		c:prototypeS="${examples.package}.Source" c:prototypeT="${examples.package}.Target" />
+		
+	<!-- Dozer mapping files and converter set up and is typically a singleton -->
+	<bean id="org.dozer.Mapper" class="org.dozer.DozerBeanMapper"
+		scope="singleton">
+		
+		<description>This bean is specifically for dozer to be aware of all
+			the custom converters for use
+		</description>
+		<property name="mappingFiles">
+			<description>The property name mappingFiles cannot be modified as
+				otherwise dozer fails
+			</description>
+			<list>
+				<description>Here is the place where all the dozer mapping files to
+					be listed
+				</description>
+				<value>dozerBeanMapping.xml</value>
+			</list>
+		</property>
+		<property name="customConvertersWithId">
+			<description>The property name customConvertersWithId represents a
+				map	and the name of this property cannot be modified as otherwise
+				dozer fails.
+			</description>
+			<map>
+				<description>This is one unified map of all converters and typically
+					key and value-ref is maintained	to have the same values to reduce
+					need for too many unique strings to	maintain
+				</description>
+				<entry key="to-date" value-ref="to-date" />
+				<entry key="to-big-int" value-ref="to-big-int" />
+				<entry key="to-big-decimal" value-ref="to-big-decimal" />
+				<entry key="to-short" value-ref="to-short" />
+				<entry key="to-long" value-ref="to-long" />
+				<entry key="to-int" value-ref="to-int" />
+				<entry key="to-boolean" value-ref="to-boolean" />
+				<entry key="to-byte" value-ref="to-byte" />
+				<entry key="to-double" value-ref="to-double" />
+				<entry key="to-string" value-ref="to-string" />
+				<entry key="source-to-target-list" value-ref="source-to-target-list" />
+				<entry key="source-to-target-pre-defined" value-ref="source-to-target-pre-defined" />
+			</map>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"
+		scope="singleton" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		scope="singleton">
+		<description>This is a common properties file that may declare
+			repetatively usable strings, constants and class/package names etc
+		</description>
+		<property name="location" value="bean-default.properties" />
+	</bean>
+</beans>
