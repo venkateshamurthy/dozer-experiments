@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 /**
- * A Custom Dozer converter for converting a string value to a constant of given type
+ * A custom dozer converter for converting a string value to a constant of given type
  * 
  * @author vemurthy
  */
@@ -50,6 +50,9 @@ public class ConstantsTypedConverter<T> extends AbstractMapperAwareConverter<Str
         return super.convert(existingDestinationFieldValue, sourceFieldValue, destinationClass, sourceClass);
     }
 
+    /**
+     * {@inheritDoc}. In specific this method converts a string to a primitive type.
+     */
     @SneakyThrows
     @SuppressWarnings("unchecked")
     @Override

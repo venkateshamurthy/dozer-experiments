@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
 
 import org.dozer.Mapper;
@@ -18,28 +20,45 @@ import org.springframework.context.ApplicationContext;
 //import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
+
 import com.github.venkateshamurthy.dozer.converters.examples.Source;
 import com.github.venkateshamurthy.dozer.converters.examples.SourceHolder;
 import com.github.venkateshamurthy.dozer.converters.examples.Target;
 import com.github.venkateshamurthy.dozer.converters.examples.TargetHolder;
 import com.github.venkateshamurthy.dozer.converters.examples.TargetListHolder;
 
+/**
+ * This class experiments / tests the dozer mapper invocation of various things.
+ * 
+ * @author vemurthy
+ *
+ */
 @Log
+@FieldDefaults(level=AccessLevel.PRIVATE)
 public class TestDozerExperiments {
-
-	private static ApplicationContext ctx;
-	private static Mapper mapper;
-	@Rule public TestWatcher testWatchMan = new TestWatcher() {
-		@Override protected void starting(Description description) {
+	/** A spring application context that has possession of bean objects , converters to use */
+	static ApplicationContext ctx;
+	/** A dozer mapper configured in beans configuration file */
+	static Mapper mapper;
+	/**
+	 * A test watcher that just emits when the next test started.. otherwise its
+	 * harder to differentiate the output for which test case.
+	 */
+	@Rule
+	public TestWatcher testWatchMan = new TestWatcher() {
+		@Override
+		protected void starting(Description description) {
 			log.info("Starting .." + description.getMethodName());
 		}
 	};
+
 	@BeforeClass
 	public static void beforeClass() {
 		ctx = Utils.getApplicationContext();
 		mapper = ctx.getBean("org.dozer.Mapper", Mapper.class);
 	}
 
+	/** test a predefined target substitution */
 	@Test
 	public void testPreDefinedTargetSubstitution() throws NoSuchFieldException,
 			SecurityException {
@@ -51,6 +70,7 @@ public class TestDozerExperiments {
 		assertEquals(expectedTarget, targetHolder.getTarget());
 	}
 
+	/** test a field (of type date/int/long etc) for a constant substitution */
 	@Test
 	public void testTargetWithFewConstants() {
 		SourceHolder sourceHolder = ctx.getBean("source-holder",
@@ -60,6 +80,7 @@ public class TestDozerExperiments {
 		log.info(targetHolder.toString());
 	}
 
+	/** test a singular element to a destination list type */
 	@Test
 	public void testTargetList() {
 		SourceHolder sourceHolder = ctx.getBean("source-holder",
@@ -73,7 +94,7 @@ public class TestDozerExperiments {
 		Target target = targets.get(0);
 		assertEquals(source.getAddress1(), target.getStreet1());
 		assertEquals(source.getAddress2(), target.getStreet2());
-		assertEquals(source.getPhone(),target.getPhone());
+		assertEquals(source.getPhone(), target.getPhone());
 		log.info(targetHolder.getTargets().toString());
 	}
 }

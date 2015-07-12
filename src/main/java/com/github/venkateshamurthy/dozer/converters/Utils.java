@@ -10,7 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 @Data
 @FieldDefaults(level=AccessLevel.PRIVATE,makeFinal=true)
 class Utils {
-	@SuppressWarnings("unused")
 	@Getter
 	static ApplicationContext applicationContext= new ClassPathXmlApplicationContext("classpath:beans.xml");
 }

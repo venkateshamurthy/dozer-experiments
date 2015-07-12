@@ -15,6 +15,7 @@ import org.dozer.Mapper;
 import org.dozer.MapperAware;
 
 /**
+ * This is a helpful abstraction for mapper aware dozer converters.
  * @author vemurthy
  *
  */
@@ -39,6 +40,7 @@ public abstract class AbstractMapperAwareConverter<S, T> extends
 	Class<T> klassT;
 
 	/**
+	 * Constructor
 	 * @param prototypeS
 	 * @param prototypeT
 	 */
