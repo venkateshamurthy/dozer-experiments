@@ -2,7 +2,7 @@ package com.github.venkateshamurthy.dozer.converters;
 
 /**
  * This package consists a few {@link org.dozer dozer} custom converter in conjunction with {@link  org.springframework.context.ApplicationContext spring}
- * beans integration.
+ * beans integration.It is important to go thrugh test package to understand the correct use.
  * <p>
  * 
  * <pre>
