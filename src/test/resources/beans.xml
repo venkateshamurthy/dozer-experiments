@@ -1,7 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 	<description>
 		Note about converters:
 		The below converters specialize in assigning a	constant or	constant/pre-defined bean to the target.
@@ -13,11 +14,29 @@
 		This would require the specific	pre-populated bean id to be declared in
 		custom-converter-param of dozer	mapping file in the form bean:bean-name.
 	</description>
-	
-	<!-- java.util.Logger being set with a format into system properties. otherwise without this the log lines are printed into 2 lines which is ugly-->
-	<bean id="java-util-logger-setup" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" 
-        p:targetObject="#{@systemProperties}" p:targetMethod="setProperty"
-        p:arguments="#{{'java.util.logging.SimpleFormatter.format','%1$tF %1$tT [%4$s]: %5$s %n'}}"/>
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"
+		scope="singleton" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		scope="singleton">
+		<description>This is a common properties file that may declare
+			repetatively usable strings, constants and class/package names etc
+		</description>
+		<property name="location" value="bean-default.properties" />
+	</bean>
+	<!-- system properties to be used. -->
+	<bean id="system-properties-setup" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" 
+        p:targetObject="#{@systemProperties}" p:targetMethod="putAll">
+        <property name="arguments">
+        	<util:properties> 
+        		<!-- <prop key="java.util.logging.SimpleFormatter.format">%1$tF %1$tT [%4$s]: %5$s %n</prop>-->
+        		<prop key="dozer.configuration">dozer.properties</prop>
+        		<prop key="dozer.debug">false</prop>
+        	</util:properties>
+       	</property>
+    </bean>
         
 	<bean id="home-phone" class="${examples.package}.Phone" p:std="000"
 		p:phoneNumber="99999999" />
@@ -107,16 +126,5 @@
 		</property>
 	</bean>
 
-	<bean
-		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"
-		scope="singleton" />
-
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		scope="singleton">
-		<description>This is a common properties file that may declare
-			repetatively usable strings, constants and class/package names etc
-		</description>
-		<property name="location" value="bean-default.properties" />
-	</bean>
+	
 </beans>

@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import org.dozer.Mapper;
 import org.junit.BeforeClass;
@@ -18,8 +18,6 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.springframework.context.ApplicationContext;
 //import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-
 
 import com.github.venkateshamurthy.dozer.converters.examples.Source;
 import com.github.venkateshamurthy.dozer.converters.examples.SourceHolder;
@@ -33,7 +31,7 @@ import com.github.venkateshamurthy.dozer.converters.examples.TargetListHolder;
  * @author vemurthy
  *
  */
-@Log
+@Slf4j
 @FieldDefaults(level=AccessLevel.PRIVATE)
 public class TestDozerExperiments {
 	/** A spring application context that has possession of bean objects , converters to use */
@@ -48,7 +46,7 @@ public class TestDozerExperiments {
 	public TestWatcher testWatchMan = new TestWatcher() {
 		@Override
 		protected void starting(Description description) {
-			log.info("Starting .." + description.getMethodName());
+			log.info("Starting ..{}", description.getMethodName());
 		}
 	};
 
